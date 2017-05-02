@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang='cs'>
+  <head>
+    <title>PlanTrip</title>
+    <meta charset='utf-8'>
+    <meta name='description' content='PlanTrip - webová apliakce pro plánování výletů'>
+    <meta name='keywords' content='plan, trip, routeplanner, gis, geospatial'>
+    <meta name='author' content='Petr ILL'>
+    <meta name='robots' content='all'>
+
+    
+    <link rel="stylesheet" href="./web.css" media="screen" />
+    <link rel="stylesheet" href="./print.css" media="print" /> 
+    <link rel="stylesheet" href="./Leaflet/leaflet.css" />
+    <link rel="stylesheet" href="./LRM/dist/leaflet-routing-machine.css" />
+    <link rel="stylesheet" href="./LCG/dist/Control.Geocoder.css" />
+    <script src="./Leaflet/leaflet.js"></script>
+    <script src="./LRM/dist/leaflet-routing-machine.js"></script>       
+    <script src="./GH/lrm-graphhopper.js"></script>
+    <script src="./LCG/dist/Control.Geocoder.js"></script> 
+    <script src='http://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-image/v0.0.4/leaflet-image.js'></script>
+    <script type="text/javascript" src="./base.js"></script>
+   
+    
+
+
+	<style>
+		#map {
+			width: 60%;
+			height: 600px;
+		}
+    
+	</style>
+  </head>
+  <body>
+  
+   <div class="header"></div>
+   <div id='map' class='main'></div>   
+   <script type="text/javascript">
+
+var map = L.map('map');
+
+
+
+
+L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}{r}.png', {
+    attribution: '© OpenStreetMap contributors',
+    crossOrigin: null,
+}).addTo(map);
+
+var mywms = L.tileLayer.wms("http://ags.cuzk.cz/arcgis/services/dmr5g/ImageServer/WMSServer", { 
+    layers: '0',
+    format: 'image/png',
+    opacity: '0.3',
+    version: '1.3.0',
+});
+mywms.addTo(map);
+
+var rivers = new L.TileLayer.WMS(GEOSERVERBASE + "/geoserver/NaturalEarth/wms",
+    {
+        layers: "ne_50m_rivers_lake_centerlines",
+        format: 'image/png',
+        transparent: true,
+
+    });
+rivers.addTo(map);
+
+var control = L.Routing.control({
+    language: 'en',
+    router: new L.Routing.GraphHopper('54144eec-4dac-4bf9-b26c-27f2e68bdbc5'),
+    waypoints: [
+        L.latLng(50.0905, 14.3995),
+        L.latLng(50.0876, 14.4212)
+    ],
+    routeWhileDragging: true,
+    geocoder: L.Control.Geocoder.nominatim()
+}).addTo(map);
+
+
+function createButton(label, container) {
+    var btn = L.DomUtil.create('button', '', container);
+    btn.setAttribute('type', 'button');
+    btn.innerHTML = label;
+    return btn;
+}
+
+map.on('click', function(e) {
+    var container = L.DomUtil.create('div'),
+        startBtn = createButton('Start Here', container),
+        destBtn = createButton('Finish Here', container);
+
+    L.popup()
+        .setContent(container)
+        .setLatLng(e.latlng)
+        .openOn(map);
+        
+    L.DomEvent.on(startBtn, 'click', function() {
+        control.spliceWaypoints(0, 1, e.latlng);
+        map.closePopup();
+    });
+        
+    L.DomEvent.on(destBtn, 'click', function() {
+        control.spliceWaypoints(control.getWaypoints().length - 1, 1, e.latlng);
+        map.closePopup();
+    });
+});
+
+
+
+
+</script>
+
+<div class="side">
+
+<p>Webová aplikace PlanTrip byla vytvořena jako součást bakalářské práce "Webové mapové služby s využitím geoprostorových dat".</p> 
+<p>V okně s mapou se zobrazuje základní vrstva od OpenStreetMap, vrstva stínování reliéfu DMR 5G od ČÚZK a vrstva zvýrazňující významné řeky od NaturalEarth.</p> 
+<p>PlanTrip slouží k nacházení turistických tras, k čemuž využívá technologii GraphHopper. Celá mapová apliakce je postavená na open-source knihovně Leaflet.</p>  
+<p>Start a cíl trasy lze vybrat buď posunutím stávajícíh bodů, vyhledáním skrze formulář v pravém horním rohu nebo prostým kliknutím do mapy.</p>
+<p>Kliknutím na ikonku (+) lze přidat průjezdní body, skrze které žádaná trasa povede.</p>
+<p>Pomocí tlačítek níže lze vyvolat okno tisku a výsledek tak vytisknout, a nebo uložit do formátu PDF nebo OneNote.</p> 
+<br>
+
+
+<script type="text/javascript"> 
+if (window.print) {
+document.write('<form class="control"><input type="button" name="print" value="Print" onClick="window.print()"> </form>');
+}
+</script>    
+
+ 
+ </div>
+  
+
+
+ 
+  </body>
+  </html>

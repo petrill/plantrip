@@ -1,0 +1,16 @@
+/* CSS Document */
+/* header */
+      .header {
+      display: none;
+      }
+ 
+/* map box */     
+      .main {
+      width:90%;    
+      } 
+      
+/* side info */    
+
+      .side {
+       display: none;
+      }   

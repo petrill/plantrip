@@ -1,0 +1,35 @@
+/* CSS Document */
+ 
+ 
+/* header */
+      .header {
+      position: relative;       
+      width:98%;
+      height:200px;
+      margin:auto;
+      background-image: url('./headerx.png');
+      background-position: center;
+      }
+ 
+/* map box */     
+      .main {
+      position: relative; 
+      float:left;
+      width:60%;
+      background-color: white;
+      font-family:"Helvetica", sans-serif;
+      padding: 1%;
+      margin: 1% 1% 1% 1%;
+      } 
+      
+/* side info */    
+
+      .side {
+      position: relative; 
+      float:left;
+      width:30%;
+      background-color: white;
+      font-family:"Helvetica", sans-serif;
+      padding: 1%;
+      margin: 1% 1% 1% 1%;
+      }   
